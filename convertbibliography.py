@@ -23,6 +23,67 @@ words_to_numerals =\
         'ninth': '9',
         'tenth': '10'
     }
+    
+    
+class ExtensionError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
+
+def braces(s):
+    """
+    str -> str
+    Take a string and enclose it in braces ('{', '}'),
+    unless it already has them.
+    >>> 'foo'
+    '{foo}'
+    >>> '{foo}'
+    '{foo}'
+    """
+    if not s.startswith('{'):
+        s = '{' + s
+    if not s.endswith('}'):
+        s = s + '}'
+    return s
+
+
+def check_extensions(p, l):
+    """ str, list of str -> string, bool
+    Take a path and a list of strings.
+    If the path has one of the list as an extension,
+    return the path.
+    If the path has another extension,
+    raise an ExtensionError.
+    If the path has no extension, check the list in order for files with that
+    extension then return the path with the first one added.
+    If a file isn't found, raise an ExtensionError.
+    >> check_extensions('foo.txt', ['txt'])
+    'foo.txt'
+    >> check_extensions('foo.md', ['txt'])
+    None
+    >> check_extensions('foo', ['txt'])
+    'foo.txt'
+    """
+    if os.path.splitext(p)[1][1:] in l:
+        return p
+    elif os.path.splitext(p)[1]:
+        message = ("I know about these extensions: {}. "
+                   "You have chosen an extension I don't know about: {}."
+                   .format(', '.join(l), os.path.splitext(p)[1][1:]))
+        raise ExtensionError(message)
+    else:
+        for i in range(len(l)):
+            if os.path.isfile(p + '.' + l[i]):
+                return p + '.' + l[i]
+            else:
+                message = ("I know about these extensions: {}. "
+                           "I couldn't find a file with one of these "
+                           "extensions."
+                           .format(', '.join(l)))
+                raise ExtensionError(message)
 
 
 def title_name(name):
@@ -66,7 +127,7 @@ def publisher(record):
     """
     if "publisher" in record:
         if re.search('and', record["publisher"]):
-            record["publisher"] = hodgson.braces(record["publisher"])
+            record["publisher"] = braces(record["publisher"])
     return record
 
 
@@ -397,7 +458,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     target = args.target
     list_of_extensions = ['bib']
-    bib = hodgson.check_extensions(target, list_of_extensions)
+    bib = check_extensions(target, list_of_extensions)
     # The bib file to modify
     shutil.copy(bib, bib + '.backup')
     print(
