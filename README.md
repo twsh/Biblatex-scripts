@@ -14,6 +14,7 @@ This script changes the format of bibliographies to follow (my own opinionated v
 * Protect 'and' in publisher names, which Biblatex would otherwise interpret as a list
 * Remove ordinals from editions
 * Add DOIs to articles that don't already have them
+* Strip 'http://dx.doi.org/' from the beginning of DOI fields
 
 # references.py
 
