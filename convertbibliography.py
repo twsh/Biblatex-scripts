@@ -101,6 +101,32 @@ def title_name(name):
             [x.title() if not re.match('and', x) else x for x in name.split()]
         )
     return name
+    
+    
+def remove_resolver(doi):
+    """
+    str -> str
+    Remove the 'http://dx.doi.org/' at the start of DOIs
+    retrived from the Crossref API.
+    >>> remove_resolver('http://dx.doi.org/10.1080/00455091.2013.871111')
+    '10.1080/00455091.2013.871111'
+    >>> remove_resolver('10.1080/00455091.2013.871111')
+    '10.1080/00455091.2013.871111'
+    """
+    return re.sub('http://dx.doi.org/', '', doi)
+
+
+def strip_doi(record):
+    """
+    Strip resolvers from DOI fields.
+
+    :param record: the record.
+    :type record: dict
+    :returns: dict -- the modified record.
+    """
+    if "doi" in record:
+        record["doi"] = remove_resolver(record["doi"])
+    return record
 
 
 def get_doi(record):
@@ -139,7 +165,7 @@ def get_doi(record):
                 if r.status_code == requests.codes.ok:
                     # The result is JSON text
                     # Parse it and get the DOI as a string
-                    record["doi"] = hodgson.remove_resolver(
+                    record["doi"] = remove_resolver(
                         r.json()['results'][0]['doi']
                     )
             except requests.exceptions.ConnectionError:
@@ -499,6 +525,7 @@ def customizations(record):
     record = multivolume(record)
     record = publisher(record)
     record = get_doi(record)
+    record = strip_doi(record)
     return record
 
 if __name__ == "__main__":
