@@ -2,6 +2,7 @@
 
 import argparse
 import re
+import requests
 import shutil
 import titlecase
 
@@ -100,6 +101,53 @@ def title_name(name):
             [x.title() if not re.match('and', x) else x for x in name.split()]
         )
     return name
+
+
+def get_doi(record):
+    """
+    Try to get DOIs for articles from the Crossref API.
+
+    :param record: the record.
+    :type record: dict
+    :returns: dict -- the modified record.
+    """
+    if record["type"] == "article" and "doi" not in record:
+        # Build a search term for the API
+        query = ''
+        if "title" in record:
+            query += record["title"]
+        if "author" in record:
+            query += ' ' + record["author"]
+        if query:
+            payload = '["{}"]'.format(query)
+            # We might not have an internet connection
+            # Catch the exception that will raise
+            try:
+                r = requests.post(
+                    url='http://search.crossref.org/links',
+                    headers={
+                        'Content-Type': 'application/json'
+                    },
+                    data=payload
+                )
+                print(
+                    'I got status code {} from the Crossref API.'.format(
+                        r.status_code
+                    )
+                )
+                # Proceed if the status code was a good one
+                if r.status_code == requests.codes.ok:
+                    # The result is JSON text
+                    # Parse it and get the DOI as a string
+                    record["doi"] = hodgson.remove_resolver(
+                        r.json()['results'][0]['doi']
+                    )
+            except requests.exceptions.ConnectionError:
+                print(
+                    "I couldn't get a DOI. "
+                    "Perhaps you are not connected to the internet?"
+                )
+    return record
 
 
 def titlecase_name(record):
@@ -450,6 +498,7 @@ def customizations(record):
     record = edition(record)
     record = multivolume(record)
     record = publisher(record)
+    record = get_doi(record)
     return record
 
 if __name__ == "__main__":
