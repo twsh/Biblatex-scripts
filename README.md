@@ -4,7 +4,7 @@ Biblatex uses a 'crossref' field to link entries together. For example a chapter
 
 # convertbibliography.py
 
-This script changes the format of bibliographies to follow (my own opinionated version of) Biblatex style. A backup is made before anything is changed. Most of the heavy lifting is done by [bibtexparser](https://pypi.python.org/pypi/bibtexparser) (see above). You will need to have installed the Python [titlecase](https://pypi.python.org/pypi/titlecase) package. My own additions are extra functions to be used as customizations. Some are left unused because after writing them I decided I didn't want them. As currently written the script will:
+This script changes the format of bibliographies to follow (my own opinionated version of) Biblatex style. A backup is made before anything is changed. Most of the heavy lifting is done by [bibtexparser](https://pypi.python.org/pypi/bibtexparser) (see above). You will need to have installed the Python [titlecase](https://pypi.python.org/pypi/titlecase) package. My own additions are extra functions to be used as customizations. Some are left unused because after writing them I decided I didn't want them. The script will try to get a [DOI](https://en.wikipedia.org/wiki/Digital_object_identifier) for articles using the [Crossref API](http://search.crossref.org/help/api). You will need to have installed the Python [requests](https://pypi.python.org/pypi/requests) package. The script will:
 
 * Put authors into last name, first name order (although this will go wrong with multi-word last names) and fix their case
 * Put titles in title case
@@ -13,6 +13,7 @@ This script changes the format of bibliographies to follow (my own opinionated v
 * Remove 'pp.' and 'p.' from page fields
 * Protect 'and' in publisher names, which Biblatex would otherwise interpret as a list
 * Remove ordinals from editions
+* Add DOIs to articles that don't already have them
 
 # references.py
 
