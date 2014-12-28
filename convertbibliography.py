@@ -107,7 +107,7 @@ def remove_resolver(doi):
     """
     str -> str
     Remove the 'http://dx.doi.org/' at the start of DOIs
-    retrived from the Crossref API.
+    retrieved from the Crossref API.
     >>> remove_resolver('http://dx.doi.org/10.1080/00455091.2013.871111')
     '10.1080/00455091.2013.871111'
     >>> remove_resolver('10.1080/00455091.2013.871111')
