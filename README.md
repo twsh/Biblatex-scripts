@@ -19,3 +19,7 @@ This script changes the format of bibliographies to follow (my own opinionated v
 # references.py
 
 This script takes a markdown file and biblatex file as arguments. It checks that every reference in the file occurs in the bibliography. If the `--unused` option is given then instead the script checks whether there are items in the bibliography that aren't used in the markdown file.
+
+# fixbibliography.py
+
+This script takes files as arguments. The first is checked for biblatex entries without citekeys. Any that are found are given a dummy cite key. A blank line is added to the beginning of the file if there isn't one already. The result is written to STDOUT. If a second argument is given the output is sent there. Alternatively, the script can read its input from STDIN. The result is a file that [BibDesk](http://bibdesk.sourceforge.net) can open.
