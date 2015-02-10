@@ -70,6 +70,37 @@ def remove_resolver(doi):
     '10.1080/00455091.2013.871111'
     """
     return re.sub('http://dx.doi.org/', '', doi)
+    
+
+def non_page_hyphens(record):
+    """
+    Replace numbers of hyphens != 2 with 2.
+
+    :param record: the record.
+    :type record: dict
+    :returns: dict -- the modified record.
+    """
+    if "volume" in record:
+        record["volume"] = re.sub('-+', '--', record["volume"])
+    if "issue" in record:
+        record["issue"] = re.sub('-+', '--', record["issue"])
+    if "number" in record:
+        record["number"] = re.sub('-+', '--', record["number"])
+    return record
+
+
+def dashes(record):
+    """
+    Replace en and em dashes with hyphens.
+
+    :param record: the record.
+    :type record: dict
+    :returns: dict -- the modified record.
+    """
+    for field in record:
+        record[field] = re.sub('–', '--', record[field])
+        record[field] = re.sub('—', '---', record[field])
+    return record
 
 
 def strip_doi(record):
@@ -473,6 +504,8 @@ def customizations(record):
     record = case_title(record)
     record = convert_to_unicode(record)
     record = journaltitle(record)
+    record = non_page_hyphens(record)
+    record = dashes(record)
     record = page_double_hyphen(record)
     record = remove_pp(record)
     record = escape_characters(record)
