@@ -118,7 +118,7 @@ def strip_doi(record):
 
 def get_doi(record):
     """
-    Try to get DOIs for articles from the Crossref API.
+    Try to get DOIs for articles from the CrossRef API.
 
     :param record: the record.
     :type record: dict
@@ -144,21 +144,30 @@ def get_doi(record):
                     data=payload
                 )
                 print(
-                    'I got status code {} from the Crossref API.'.format(
-                        r.status_code
+                    'I got status code {} from the CrossRef API for record {}.'.format(
+                        r.status_code,
+                        record["id"]
                     )
                 )
                 # Proceed if the status code was a good one
                 if r.status_code == requests.codes.ok:
                     # The result is JSON text
-                    # Parse it and get the DOI as a string
-                    record["doi"] = remove_resolver(
-                        r.json()['results'][0]['doi']
-                    )
+                    # Parse it and get the DOI as a string, if possible
+                    try:
+                        record["doi"] = hodgson.remove_resolver(
+                            r.json()['results'][0]['doi']
+                        )
+                    except IndexError:
+                        print(
+                            "The JSON returned from the CrossRef API for record {} couldn't be parsed.".format(
+                                record["id"]
+                            )
+                        )
             except requests.exceptions.ConnectionError:
                 print(
-                    "I couldn't get a DOI. "
-                    "Perhaps you are not connected to the internet?"
+                    "I couldn't get a DOI for record {}. Perhaps you are not connected to the internet?".format(
+                        record["id"]
+                    )
                 )
     return record
 
