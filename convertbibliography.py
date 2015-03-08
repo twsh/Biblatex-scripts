@@ -154,7 +154,7 @@ def get_doi(record):
                     # The result is JSON text
                     # Parse it and get the DOI as a string, if possible
                     try:
-                        record["doi"] = hodgson.remove_resolver(
+                        record["doi"] = remove_resolver(
                             r.json()['results'][0]['doi']
                         )
                     except IndexError:
