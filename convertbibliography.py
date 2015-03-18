@@ -360,7 +360,7 @@ def remove_publisher(record):
 
 def remove_link(record):
     """
-    Remove abstracts.
+    Remove links.
 
     :param record: the record.
     :type record: dict
@@ -490,7 +490,7 @@ def multivolume(record):
 
 def remove_booktitle(record):
     """
-    Remove abstracts.
+    Remove 'booktitle' fields.
 
     :param record: the record.
     :type record: dict
