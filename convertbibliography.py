@@ -157,7 +157,7 @@ def get_doi(record):
                         record["doi"] = remove_resolver(
                             r.json()['results'][0]['doi']
                         )
-                    except IndexError:
+                    except (IndexError, KeyError):
                         print(
                             "The JSON returned from the CrossRef API for record {} couldn't be parsed.".format(
                                 record["id"]
