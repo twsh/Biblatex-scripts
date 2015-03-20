@@ -24,6 +24,23 @@ words_to_numerals =\
         'ninth': '9',
         'tenth': '10'
     }
+
+
+def empty_fields(record):
+    """
+    Remove empty fields.
+
+    :param record: the record.
+    :type record: dict
+    :returns: dict -- the modified record.
+    """
+    list_of_empty_fields = []
+    for field in record:
+        if record[field] == '':
+            list_of_empty_fields.append(field)
+    for field in list_of_empty_fields:
+        del record[field]
+    return record
     
     
 def braces(s):
@@ -524,6 +541,7 @@ def customizations(record):
     record = publisher(record)
     record = get_doi(record)
     record = strip_doi(record)
+    record = empty_fields(record)
     return record
 
 if __name__ == "__main__":
