@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
 import re
-from bibtexparser.bparser import BibTexParser
-# Set logging level to ERROR and above;
-# prevents bibtexparser giving a WARNING I don't care about.
-logging.basicConfig(level=logging.ERROR)
 
 # Match '@' followed by one or more letters, four numbers,
 # then zero or more letters.
@@ -24,7 +19,7 @@ if __name__ == "__main__":
     bibliography = args.bibliography
     with open(bibliography) as bib_file:
         set_of_keys =\
-            {record['id'] for record in BibTexParser(bib_file.read()).entries}
+            {record['id'] for record in BibTexParser(bib_file.read(), ignore_nonstandard_types=False).entries}
     with open(target) as file:
         target_string = file.read()
         list_of_references = re.findall(regex, target_string)
